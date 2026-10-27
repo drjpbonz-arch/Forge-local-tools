@@ -22,11 +22,12 @@ AP.add_argument("--max-pages", type=int, default=0, help="0 = all pages")
 AP.add_argument("--host", default="http://localhost:11434")
 A=AP.parse_args()
 
-# Hard dependencies: PyMuPDF renders pages to images, python-docx builds the output.
+# Hard dependencies: pypdfium2 (BSD-3-Clause / Apache-2.0) renders pages to images,
+# Pillow encodes them as PNG, python-docx builds the output.
 try:
-    import fitz  # PyMuPDF
+    import pypdfium2 as pdfium
 except ImportError:
-    sys.exit("PyMuPDF missing.  Fix:  pip install pymupdf python-docx  (the .bat does this for you)")
+    sys.exit("pypdfium2 missing.  Fix:  pip install pypdfium2 pillow python-docx")
 try:
     from docx import Document
     from docx.shared import Inches, Pt
@@ -50,6 +51,11 @@ def ocr(img_bytes, model, host):
     with urllib.request.urlopen(req, timeout=900) as r:
         return json.load(r)["message"]["content"].strip()
 
+def render_png(page, dpi):
+    # Rasterize one page at the requested DPI and return PNG bytes (pdfium works in 72-pt units).
+    bitmap=page.render(scale=dpi/72.0)
+    buf=io.BytesIO(); bitmap.to_pil().save(buf, format="PNG"); return buf.getvalue()
+
 # --- Output dir + append-only run log (keeps progress visible and enables resume) ---
 os.makedirs(A.out_dir, exist_ok=True)
 log=open(os.path.join(A.out_dir,"_ocr_log.txt"),"a",encoding="utf-8")
@@ -66,7 +72,7 @@ for n,p in enumerate(pdfs,1):
     if os.path.exists(out) and os.path.getsize(out)>0:
         skip+=1; continue
     try:
-        doc=fitz.open(p); npages=doc.page_count
+        doc=pdfium.PdfDocument(p); npages=len(doc)
         limit=npages if A.max_pages==0 else min(npages, A.max_pages)
         D=Document()
         h=D.add_heading(stem,0)
@@ -77,9 +83,9 @@ for n,p in enumerate(pdfs,1):
                         "against the page image before citing.").italic=True
         # Each page: render -> OCR (never fatal) -> write a heading, the text, then the page image.
         for i in range(limit):
-            page=doc.load_page(i)
-            pix=page.get_pixmap(dpi=A.dpi)
-            img=pix.tobytes("png")
+            page=doc[i]
+            img=render_png(page, A.dpi)
+            page.close()
             try: text=ocr(img, A.model, A.host)
             except Exception as e: text=f"[OCR FAILED on this page: {e}]"
             D.add_page_break() if i else None
@@ -89,6 +95,7 @@ for n,p in enumerate(pdfs,1):
             D.add_paragraph("— page image —").italic=True
             D.add_picture(io.BytesIO(img), width=Inches(6.0))
             say(f"  [{n}/{len(pdfs)}] {stem[:40]:40} page {i+1}/{limit}")
+        doc.close()
         # Save atomically: write to .part then replace, so an interrupted run never leaves a half file.
         tmp=out+".part"; D.save(tmp); os.replace(tmp,out); done+=1
         say(f"[{n}/{len(pdfs)}] OK   {stem[:50]}  ({limit} pages)")
