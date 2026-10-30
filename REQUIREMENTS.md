@@ -23,3 +23,21 @@ Python 3.10+. Standard-library-only tools need nothing else.
 - `media_organization/sanitize_manifest.py`: standard library
 
 External programs some tools call: `ffmpeg`/`ffprobe` (audio_pipeline), `demucs` (clean_and_split.py), a local Ollama server (qwen_bench.py, pdf_ocr_to_docx.py).
+
+## Third-party licences
+
+The code in this repository is MIT (see `LICENSE`). It bundles no third-party code: each tool imports packages you install yourself, and some call programs you install separately. Their licences, as each project declares them on PyPI (checked 27 and 30 OCT 2026):
+
+| package | used by | licence |
+|---|---|---|
+| numpy | 4 tools | BSD-3-Clause, with 0BSD, MIT, Zlib and CC0-1.0 parts |
+| opencv-python | keyframe_gate, make_aruco_placards | Apache-2.0 |
+| Pillow | 5 tools | MIT-CMU |
+| pillow-heif | prep_listing_photos, qwen_bench, extract_capture_dates | BSD-3-Clause (its binary wheels include native HEIF libraries under their own licences) |
+| pypdfium2 | pdf_ocr_to_docx | Apache-2.0 or BSD-3-Clause (its wheels include PDFium and PDFium's dependencies under their own licences) |
+| python-docx | pdf_ocr_to_docx, stamp_colophon | MIT |
+| ctranslate2 | captions | MIT |
+| faster-whisper | captions | MIT |
+| torch | clean_and_split | Apache-2.0, BSD-2-Clause, BSD-3-Clause, BSL-1.0 and MIT parts |
+
+External programs and models, each under its own terms, which you accept when you install them: `ffmpeg`/`ffprobe` (LGPL-2.1 or GPL, depending on the build you install), Demucs (MIT code; its pretrained weights carry their own terms, so check them before commercial use), Ollama (MIT) and whichever models you run in it, and the speech models faster-whisper downloads (see each model's card).
