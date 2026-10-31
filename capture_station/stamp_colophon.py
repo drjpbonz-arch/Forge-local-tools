@@ -35,6 +35,13 @@ def default_roles(author):
         f"Writing - Original Draft: AI assistant.  Writing - Review, Editing & Final Authority: {author}."
     )
 
+def fit_property(text, limit=255):
+    """Core document properties are capped at 255 characters (python-docx raises above that).
+    The full statement stays in the visible colophon; the embedded copy is shortened to fit."""
+    if len(text) <= limit:
+        return text
+    return text[: limit - 3].rstrip() + "..."
+
 # Marker doubles as the visible heading and the idempotency sentinel (self-consistent).
 MARKER = "COLLABORATIVE WORK PRODUCT"
 
@@ -58,9 +65,9 @@ def stamp(path, roles, author):
     # Embedded properties survive into PDF exports and file-properties panes, so the
     # credit travels with the file even when the visible page is cropped or converted.
     cp = doc.core_properties
-    cp.author = f"{author} (with an AI assistant)"
-    cp.comments = f"CRediT: {roles}"
-    if not cp.title: cp.title = os.path.splitext(os.path.basename(path))[0]
+    cp.author = fit_property(f"{author} (with an AI assistant)")
+    cp.comments = fit_property(f"CRediT: {roles}")
+    if not cp.title: cp.title = fit_property(os.path.splitext(os.path.basename(path))[0])
     doc.save(path)
     return "stamped"
 

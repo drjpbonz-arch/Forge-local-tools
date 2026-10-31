@@ -3,7 +3,7 @@
 extract_capture_dates.py — recover REAL capture dates for a media manifest.
 
 WHY: iCloud (and some exports) reset filesystem timestamps to the download/export
-date, so build_catalog.py clusters everything into one bogus "today" shooting day.
+date, so a catalog builder clusters everything into one bogus "today" shooting day.
 The true capture date survives in metadata:
   - Photos: EXIF DateTimeOriginal (Exif sub-IFD 0x8769, tag 36867), else EXIF
     DateTime (tag 306). HEIC supported via pillow-heif.
@@ -13,7 +13,7 @@ The true capture date survives in metadata:
 
 WHAT IT DOES: reads a manifest CSV, adds two columns (capture_date, date_source),
 and REWRITES the 'created' field with the best real datetime so the existing
-build_catalog.py clusters on it unchanged. When no metadata date exists it falls
+a catalog builder clusters on it unchanged. When no metadata date exists it falls
 back to the file's 'modified' date (never the hydration / "today" date) and tags
 date_source=modified_fallback so you can spot soft clusters.
 

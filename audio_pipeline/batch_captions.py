@@ -45,7 +45,7 @@ OUTPUT LAYOUT (the decision this file makes, and why)
       - "must not scatter into cloud-synced surprise locations": there is
         exactly one new top-level folder to exclude from sync or relocate,
         not hundreds buried at random depths.
-      - "must be greppable in one place": `grep -r foo _transcripts\` finds
+      - "must be greppable in one place": `grep -r foo _transcripts\\` finds
         every transcript in the corpus in one shot.
       - "must be resume-safe": completion is checked by looking for the
         expected output files in this mirror, never by trusting a log.
@@ -54,7 +54,7 @@ OUTPUT LAYOUT (the decision this file makes, and why)
         next to the transcript it describes, with zero new naming logic.
 
     batch_manifest.csv, BATCH_MANIFEST.md, and batch_run.log all live at the
-    top of that same _transcripts\ folder - the entire batch's paper trail
+    top of that same _transcripts\\ folder - the entire batch's paper trail
     in one place.
 
 TESTABILITY (no GPU, no model weights required)
@@ -71,7 +71,7 @@ ever shells out to ffprobe (to build the manifest) and to captions.py itself
 
 Usage:
     python batch_captions.py --manifest
-    python batch_captions.py --manifest --root D:\other\corpus
+    python batch_captions.py --manifest --root D:\\other\\corpus
     python batch_captions.py --run
     python batch_captions.py --run --limit 10
 See --help for every flag.

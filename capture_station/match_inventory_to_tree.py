@@ -8,7 +8,7 @@ are byte-identical to files in the inventory. Size-first (cheap), then MD5 only 
 Per-file timeout + IO-error capture so cloud-only placeholders (Sync.com) are COUNTED, not fatal.
 REPORT ONLY. Nothing moved, nothing deleted.
 
-Toolbox search (2026-09-07, by function): dedupe_media.py = duplicates within one tree;
+Toolbox search (2026-09-07, by function): an in-tree duplicate finder covers duplicates within one tree;
 crosscheck_hash_inventories.py (25c) = joins N inventories; nothing matched an inventory against a
 live tree without first inventorying the tree (hours on 14 GB). This is the missing rung.
 

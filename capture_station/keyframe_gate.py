@@ -19,7 +19,7 @@ Maps to Methods_and_Materials v2.0: plate-state keyframes automate the
   against SCRIPT_REGISTRY_REBUILD_2026-07-31_v02 + additions: ZERO hits.
   Nearest: capture_squeeze.py samples frames at FIXED INTERVAL - different
   job (exhaustive extraction), shared doctrine (EXIF canonical, resumable).
-  identify_batch.py / split_batch.py operate on STILLS. Nothing to extend -> new
+  The existing batch tools operate on STILLS. Nothing to extend -> new
   tool, same pipeline folder, registered same-day per Rule 5.
 
 DOCTRINE: input video is READ-ONLY. Nothing written without --out. Health-

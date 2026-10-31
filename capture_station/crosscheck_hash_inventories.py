@@ -7,7 +7,7 @@ columns: path,name,ext,bytes,md5,created,modified,custody_suggested,dedupe_eligi
 and reports CROSS-LOCATION duplicates: the same content hash present in more than
 one inventory. REPORT ONLY. Nothing is moved, nothing is deleted.
 
-Toolbox search (2026-09-06, by function): dedupe_media.py finds duplicates WITHIN
+Toolbox search (2026-09-06, by function): an in-tree duplicate finder finds duplicates WITHIN
 one tree; dedupe_engine.py fingerprints backup-vs-target with hardcoded roots;
 audio_dedup.py is perceptual. None joins N independent hash inventories, so this
 extends the record-inventory family with a joiner.
